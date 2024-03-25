@@ -3,20 +3,22 @@ ARG VARIANT=bullseye
 FROM --platform=linux/amd64 mcr.microsoft.com/vscode/devcontainers/base:0-${VARIANT}
 
 
-# Instalar VSCode y Python
-# Utilizaremos el gestor de paquetes apt para instalar Python.
-# Para instalar VSCode, se descargará el .deb desde el sitio oficial y se instalará con dpkg.
+# Instalar dependencias necesarias para añadir un nuevo repositorio
 RUN apt-get update \
-    && apt-get install -y wget gnupg2 software-properties-common lsb-release \
-    && wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.asc.gpg \
+    && apt-get install -y wget gnupg2 software-properties-common lsb-release
+
+# Agregar el repositorio de Microsoft para VS Code
+RUN wget -q https://packages.microsoft.com/keys/microsoft.asc -O- | gpg --dearmor > microsoft.asc.gpg \
     && mv microsoft.asc.gpg /etc/apt/trusted.gpg.d/ \
     && wget -q https://packages.microsoft.com/config/debian/$(lsb_release -rs)/prod.list \
-    && mv prod.list /etc/apt/sources.list.d/microsoft-prod.list \
-    && chown root:root /etc/apt/trusted.gpg.d/microsoft.asc.gpg \
-    && chown root:root /etc/apt/sources.list.d/microsoft-prod.list \
-    && apt-get update \
-    && apt-get install -y code \
-    && apt-get install -y python3 python3-pip
+    && mv prod.list /etc/apt/sources.list.d/microsoft-prod.list
+
+# Actualizar la lista de paquetes después de añadir el repositorio de Microsoft
+RUN apt-get update
+
+# Instalar Visual Studio Code y Python
+RUN apt-get install -y code python3 python3-pip
+
 
 
 # Desktop lite
