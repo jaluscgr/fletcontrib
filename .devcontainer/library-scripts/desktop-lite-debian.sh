@@ -10,7 +10,7 @@
 # Syntax: ./desktop-lite-debian.sh [non-root user] [Desktop password] [Install web client flag] [VNC port] [Web Port]
 
 USERNAME=${1:-"automatic"}
-VNC_PASSWORD=${2:-""}
+VNC_PASSWORD=${2:-"admin"}
 INSTALL_NOVNC=${3:-"true"}
 VNC_PORT="${4:-5901}"
 NOVNC_PORT="${5:-6080}"
@@ -368,7 +368,8 @@ exec "\$@"
 log "** SCRIPT EXIT **"
 EOF
 
-echo "${VNC_PASSWORD}" | vncpasswd -f > /usr/local/etc/vscode-dev-containers/vnc-passwd
+#echo "${VNC_PASSWORD}" | vncpasswd -f > /usr/local/etc/vscode-dev-containers/vnc-passwd
+echo "admin" | vncpasswd -f > /usr/local/etc/vscode-dev-containers/vnc-passwd
 chmod +x /usr/local/share/desktop-init.sh /usr/local/bin/set-resolution
 
 # Set up fluxbox config
